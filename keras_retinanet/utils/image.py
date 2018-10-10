@@ -19,6 +19,7 @@ import keras
 import numpy as np
 import cv2
 from PIL import Image
+import pydicom
 
 from .transform import change_transform_origin
 
@@ -29,7 +30,9 @@ def read_image_bgr(path):
     Args
         path: Path to the image.
     """
-    image = np.asarray(Image.open(path).convert('RGB'))
+    ds = pydicom.read_file(path).pixel_array
+    image = Image.fromarray(ds)
+    image = np.asarray(image.convert('RGB'))
     return image[:, :, ::-1].copy()
 
 

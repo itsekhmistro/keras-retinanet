@@ -21,6 +21,7 @@ from ..utils.image import read_image_bgr
 import numpy as np
 from PIL import Image
 from six import raise_from
+import pydicom
 
 import csv
 import sys
@@ -188,7 +189,10 @@ class CSVGenerator(Generator):
         """ Compute the aspect ratio for an image with image_index.
         """
         # PIL is fast for metadata
-        image = Image.open(self.image_path(image_index))
+        # image = Image.open(self.image_path(image_index))
+        ds = pydicom.read_file(self.image_path(image_index)).pixel_array
+        image = Image.fromarray(ds)
+        # image = image.convert('RGB')
         return float(image.width) / float(image.height)
 
     def load_image(self, image_index):
